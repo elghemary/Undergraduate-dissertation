@@ -1,0 +1,119 @@
+ % SET DOCUMENT CLASS, PAGE SETTINGS, FONT...
+%\documentclass[12pt,a4paper,twoside,openany,justified]{book}
+\documentclass[a4paper,12pt]{report} 
+% SET FONT TYPE
+\usepackage[T1]{fontenc}
+% \usepackage{mathpazo}
+\usepackage{charter}
+
+% LOAD PACKAGES
+\input{packages.tex}
+
+  
+
+% DEFINE ELEMENTS
+\newtheorem{definition}{Définition}
+\newtheorem{theoreme}{Théorème}
+\newtheorem{proposition}{Proposition}
+\newtheorem{preuve}{Preuve}
+\newtheorem{remarque}{Remarque}
+\newtheorem{corollaire}{Corollaire}
+\newtheorem{lemme}{Lemme}
+\newtheorem{exemple}{Exemples}
+
+\addto\captionsfrench{% Update for french language
+  \renewcommand{\examplename}{Exemple}
+}
+
+
+% PYTHON SYNTAX HIGHLIGHTING
+\usepackage{minted}
+\usepackage{listings}
+\usepackage{pythonhighlight}
+
+% the fancy title
+\usepackage[Lenny]{fncychap}
+\ChNumVar{\fontsize{76}{80}\usefont{OT1}{pzc}{m}{n}\selectfont}
+\ChTitleVar{\raggedleft\Large\bfseries}
+
+% reduce the space
+\AtBeginDocument{
+    \setlength\abovedisplayskip{10pt plus 2pt minus 2pt}
+    \setlength\belowdisplayskip{10pt plus 2pt minus 2pt}
+}
+
+
+% START THE DOCUMENT
+\begin{document}
+
+%create the bullet for the subsubsections
+\makeatletter
+\newcommand{\heading}[1]% #1 = text
+{\par\vskip 1.5ex \@plus .2ex
+ \hangindent=1em
+ \noindent\makebox[1em][l]{$\,\bullet$}\textbf{\normalsize #1}%
+\par\vskip 1.5ex \@plus .2ex
+\@afterheading}
+\makeatother
+
+% INSERT FRONTPAGE
+\thispagestyle{empty}
+\input{frontpage.tex}
+
+% ABSTRACT
+\input{abstract}
+
+% INSERT TABLE OF CONTENTS
+\begin{spacing}{1.1}
+\thispagestyle{toc}
+\tableofcontents
+\end{spacing}
+
+
+
+\pagestyle{fancy}
+\justifying
+
+% tables
+\renewcommand{\thetable}{S\arabic{table}}
+
+% INTRODUCTION
+\input{BODY/1_introduction}
+
+% CHAPITRE I
+\input{BODY/2_Chapitre I}
+
+% CHAPITRE II
+\input{BODY/3_Chapitre II}
+
+% CHAPITRE IV
+\input{BODY/5_Chapitre IV}
+
+% CONCLUSIONS
+\input{BODY/7_Conclusions}
+
+
+
+
+
+% SETTING FOR APPENDIX ENVIRONMENT
+{
+\noappendicestocpagenum
+\renewcommand{\appendixtocname}{Annexes}
+\renewcommand{\appendixpagename}{Annexes}
+\appendix
+\addappheadtotoc
+\normalsize
+}
+\appendix
+
+% APPENDIX
+\input{BODY/A_appendix-A}
+
+% BIBLIOGRAPHY
+\setstretch{1} % DECREASE LINE SPACING IN BIBLIOGRAPHY
+\normalsize\printbibliography[title={Bibliographie}]
+\addcontentsline{toc}{chapter}{Bibliographie} \markboth{Bibliographie}{Bibliographie}
+
+% END DOCUMENT
+\end{document}

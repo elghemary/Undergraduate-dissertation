@@ -1,0 +1,318 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%		~~~~ Appendix example ~~~~
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\chapter{Code python}
+% START APPENDIX
+\section{Visualisation des fonctions}
+
+\lstset{
+  language=Python,
+  showspaces=false,
+  showstringspaces=false,
+  breaklines=true,
+  postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{red}\hookrightarrow\space}},
+  basicstyle=\ttfamily,
+}
+
+\subsubsection*{La fonction Gamma}
+
+\noindent
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm,
+               fontsize=\footnotesize]{Python}
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from scipy.special import gamma
+    
+    # plot gamma function
+    x = np.linspace(0.0001, 5, 200)
+    y = gamma(x)
+    
+    plt.plot(x, y, 'r--', label="Gamma function")
+    plt.grid()
+    plt.xlim(-.05, 5)
+    plt.ylim(-.1, 20)
+    plt.xlabel(r"x")
+    plt.ylabel(r"$\Gamma(x)$")
+    plt.legend()
+    plt.show()
+\end{minted}
+\subsubsection*{La relation entre la fonction Gamma et la Factorielle
+}
+
+\noindent
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm,
+               fontsize=\footnotesize]{Python}
+    import numpy as np
+    from scipy.special import gamma, factorial
+    import matplotlib.pyplot as plt
+    
+    x = np.linspace(-3.5, 5.5, 2251)
+    y = gamma(x)
+    
+    plt.plot(x, y, 'b', alpha=0.6, label='gamma(x)')
+    
+    k = np.arange(1, 7)
+    
+    plt.plot(k, factorial(k-1), 'k*', alpha=0.6, label='(x-1)!, x = 1, 2, ...')
+    
+    plt.xlim(-3.5, 5.5)
+    plt.ylim(-10, 25)
+    plt.grid()
+    plt.xlabel('x')
+    plt.legend(loc='lower right')
+    
+    plt.show()
+\end{minted}
+D'après la documentation de scipy \cite{plot:wiki_gamma}
+
+\subsubsection*{La fonction Bêta}
+
+\noindent
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm,
+               fontsize=\footnotesize]{Python}
+    from mpl_toolkits.mplot3d import axes3d
+    import matplotlib.pyplot as plt
+    import numpy as np
+    from scipy.special import beta
+    
+    # Prepare the data by Beta(x, y)
+    X = np.arange(0.03, 4.0, .01)
+    Y = np.arange(0.03, 4.0, .01)
+    Z = np.ndarray(shape=(len(X), len(Y)), dtype = float)
+    for i in range(len(X)):
+            for j in range(len(Y)):
+                    Z[i][j] = beta(X[i], Y[j])
+    # Draw the data
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    gridX, gridY = np.meshgrid(X, Y)
+    ax.plot_surface(gridX, gridY, Z, lw=0.0, cmap='Reds')
+    # ax.azim = 180
+    ax.elev = 30
+    plt.xticks([0, 1, 2, 3, 4])
+    plt.yticks([0, 1, 2, 3, 4])
+    ax.contour(X, Y, Z, zdir='z', offset=0, cmap='Greens')
+    ax.set_xlim([4.0, 0.0])
+    ax.set_ylim([4.0, 0.0])
+    ax.set_zlim([0, 50])
+    ax.set_xlabel(r'$x$')
+    ax.set_ylabel(r'$y$')
+    ax.set_zlabel(r'$\beta(x, y)$')
+    # fig.savefig('betaFunc.png', transparent=True, dpi=800)
+    plt.show()
+\end{minted}
+D'après "Wikimedia Commens" (modifié) \cite{plot:wiki_beta}
+
+\subsubsection*{La fonction Mittag-Leffler}
+
+\noindent
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm,
+               fontsize=\footnotesize]{Python}
+    import numpy as np
+    
+    def mittag_leffler(alpha, beta, t, terms=100):
+    k = np.asarray([((t**k) / gamma(alpha * k + beta)) for k in range(terms)])
+    return k.sum(0)
+\end{minted}
+
+\section{Visualisation des solutions exactes et approximatives}
+\subsubsection*{Exemple : \ref{ex:EDO_1}}
+
+\noindent
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm,
+               fontsize=\footnotesize]{Python}
+    import numpy as np
+    import matplotlib.pyplot as plt
+    import matplotlib
+    # use latex
+    plt.rcParams.update({
+        "text.usetex": True,
+        "font.family": "Computer Modern"
+    })
+    
+    # Functions
+    x = np.linspace(0, 0.5, 100)
+    x_2 = np.linspace(0, 0.5, 20)
+    y = 1 / (1 + x)
+    y_2 = 1 - x_2 + x_2**2 - x_2**3 + x_2**4 - x_2**5 + x_2**6 - x_2**7 + x_2**8 - x_2**9 
+    + x_2**10
+    
+    plt.plot(x, y, 'r--', label="Solution exacte")
+    plt.plot(x_2, y_2, 'g^', label="Solution approchée")
+    plt.grid()
+    plt.xlim(0, 0.5)
+    plt.ylim(0.6, 1.05)
+    plt.xlabel("t")
+    plt.ylabel("u(t)")
+    plt.legend()
+    plt.savefig("plot.png", transparent=True, dpi=800)
+\end{minted}
+\subsubsection*{Exemple : \ref{ex:EDO_2}}
+
+\noindent
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm,
+               fontsize=\footnotesize]{Python}
+    import numpy as np
+    2 from scipy.special import gamma, factorial
+    3 import matplotlib.pyplot as plt
+    
+    x = np.linspace(-1, 1, 100)
+    x_2 = np.linspace(-0.98, 0.98, 20)
+    y = x  5
+    y_2 = (x_2**5 + ((1/56) * x_2**7)) - ((1/5040) * (x_2**9) + (1/56) * (x_2  7))
+    
+    plt.plot(x, y, 'r--', label="Solution exacte")
+    plt.plot(x_2, y_2, 'g^', label="Solution approchée")
+    plt.grid()
+    plt.xlim(-1, 1)
+    plt.ylim(-1, 1)
+    plt.xlabel("t")
+    plt.ylabel("u(t)")
+    plt.legend()
+    plt.axhline(linewidth=1, color='black')
+    plt.axvline(linewidth=1, color='black')
+    # plt.show()
+    plt.savefig("plot.png", transparent=True, dpi=800)
+\end{minted}
+\subsubsection*{Exemple : \ref{ex:EDF_1}}
+
+\noindent
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm,
+               fontsize=\footnotesize]{Python}
+    import numpy as np
+    2 from scipy.special import gamma, factorial
+    3 import matplotlib.pyplot as plt
+    
+    x = np.linspace(0, 1, 100)
+    x_2 = np.linspace(0, 0.98, 20)
+    y = x ** 2
+    y_2 = (x_2**2) + (6 / gamma(5.9)) * x_2**4.9 - 2 * (x_2**3.9/gamma(4.9)) 
+    - 6 * (x_2**6.8/gamma(7.8))
+    
+    plt.plot(x, y, 'r--', label="Solution exacte")
+    plt.plot(x_2, y_2, 'g^', label="Solution approchée")
+    plt.grid()
+    plt.xlim(-.05, 1)
+    plt.ylim(-.1, 1)
+    plt.xlabel("t")
+    plt.ylabel("u(t)")
+    plt.legend()
+    plt.axhline(linewidth=1, color='black')
+    plt.axvline(linewidth=1, color='black')
+    plt.show()
+\end{minted}
+\subsubsection*{Exemple : \ref{ex:EDF_2}}
+
+\noindent
+\begin{minted}[mathescape,
+               linenos,
+               numbersep=5pt,
+               gobble=2,
+               frame=lines,
+               framesep=2mm,
+               fontsize=\footnotesize]{Python}
+    import numpy as np
+    from scipy.special import gamma, factorial
+    import matplotlib.pyplot as plt
+    
+    def mittag_leffler(alpha, beta, t, terms=100):
+    k = np.asarray([((t**k) / gamma(alpha * k + beta)) for k in range(terms)])
+    return k.sum(0)
+
+    x = np.linspace(0, 1, 100)
+    x_2 = np.linspace(0, 0.98, 20)
+    y = (x ** (1.1)) * mittag_leffler(1.1, 2.1, -x**1.1)
+    y_2 = (x_2 ** (1.1)) / gamma(2.1) - (x_2 ** (2.2) / gamma(3.2)) 
+        + (x_2 ** (3.3) / gamma(4.3)) - (x_2 ** (4.4) / gamma(5.4))
+    
+    plt.plot(x, y, 'r--', label="Solution exacte")
+    plt.plot(x_2, y_2, 'g^', label="Solution approchée")
+    plt.grid()
+    plt.xlim(-.05, 1)
+    plt.ylim(-.1, .7)
+    plt.xlabel("t")
+    plt.ylabel("u(t)")
+    plt.legend()
+    plt.axhline(linewidth=1, color='black')
+    plt.axvline(linewidth=1, color='black')
+    plt.show()
+    # plt.savefig("plot.png", transparent=True, dpi=800)
+\end{minted}
+
+\chapter{Tables de comparaison}
+\vspace{-1 cm}
+\begin{table}[H]\label{tab:1}
+\caption {La solution exacte et la solution approchée en utilisant la méthode de perturbation d'Homotopie} 
+\begin{tabular*}{\textwidth}{llll}
+$\mathbf{t_k}$ & \textbf{Solution exacte} $\mathbf{x(t)=t^2}$ & \textbf{Solution Approchée} $\mathbf{x(t)}$ & \textbf{Erreur} $\mathbf{= |x(t)-x(t)|}$    \\ 
+\hline
+0.0   & 0    & 0          & 0                 \\
+0.1   & 0.10 & 0.00998856 & 0.09001144 \\
+0.2   & 0.04 & 0.0398404  & 0.0001596  \\
+0.3   & 0.09 & 0.0892778  & 0.0007222 \\
+0.4   & 0.16 & 0.157946   & 0.0007222 \\
+0.5   & 0.25 & 0.245486   & 0.004514 \\
+0.6   & 0.36 & 0.351595   & 0.008405 \\
+0.7   & 0.49 & 0.476084   & 0.013916  \\
+0.8   & 0.64 & 0.618931   & 0.021069 \\
+0.9   & 0.81 & 0.780324   & 0.029676 \\
+1     & 1.00 & 0.9607     & 0.0393 \\
+\hline
+\end{tabular*}
+\end{table}
+
+\begin{table}[H] \label{tab:2}
+\caption { La solution exacte et la solution approchée en utilisant la méthode de perturbation d'Homotopie} 
+\begin{tabular*}{\linewidth}{llll}
+$\mathbf{t_k}$ & \makecell{\textbf{Solution exacte} \\ $\mathbf{x(t)=\sum_{i=2}^{n} \frac{(-1)^{i+1}t^{1;1i}}{\Gamma(1.1i+1)}}$ } & \textbf{Solution Approchée} & \textbf{Erreur} $\mathbf{= |\mathbf{x(t)}-x(t)|}$    \\ 
+\hline
+0.0  &  0                  &  0                  &  0                \\
+0.1  &  0.073357053781371  &  0.0733563  &  7.53781371$\times$10$^{-7}$\\
+0.2  &  0.151282884629052  &  0.151281   &  1.884629052$\times$10$^{-6}$ \\
+0.3  &  0.226984580680193  &  0.226982   &  2.58068193$\times$10$^{-6}$ \\
+0.4  &  0.29890238480688   &  0.298899   &  3.38480688$\times$10$^{-6}$ \\
+0.5  &  0.366411147911488  &  0.366407   &  4.147911488$\times$10$^{-6}$ \\
+0.6  &  0.429259300754372  &  0.429254   &  5.300754372$\times$10$^{-6}$\\
+0.7  &  0.487372840288318  &  0.487367   &  5.840288318$\times$10$^{-6}$\\
+0.8  &  0.540762298480572  &  0.540756   &  6.298480572$\times$10$^{-6}$\\
+0.9  &  0.589469952960841  &  0.589464   &  5.952960841$\times$10$^{-6}$\\
+1    &  0.633536032460000  &  0.63353    &  6.03246$\times$ 10$^{-6}$\\
+\hline
+\end{tabular*}
+\end{table}
